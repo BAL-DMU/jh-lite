@@ -1,0 +1,44 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
+# JupyterHub docker-compose configuration file
+services:
+  hub:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    image: jupyterhub-local
+    container_name: jupyterhub
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jupyterhub-data:/data
+      - ./jupyterhub-system-data:/srv/jupyterhub
+      - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+      - ./create-admin.py:/srv/jupyterhub/create-admin.py
+      # SSL certificates for HTTPS
+      - ./ssl/jupyterhub.crt:/srv/jupyterhub/jupyterhub.crt
+      - ./ssl/jupyterhub.key:/srv/jupyterhub/jupyterhub.key
+    ports:
+      # HTTP port (uncomment for HTTP mode)
+      # - "8000:8000"
+      # HTTPS port (currently active)
+      - "8443:8443"
+    environment:
+      - DOCKER_NOTEBOOK_IMAGE=jupyter/base-notebook:latest
+      - DOCKER_NETWORK_NAME=jupyterhub-network
+      - DOCKER_NOTEBOOK_DIR=/home/jovyan/work
+      # Admin user
+      - JUPYTERHUB_ADMIN=admin
+      # SSL certificate paths (for HTTPS)
+      - JUPYTERHUB_SSL_CERT=/srv/jupyterhub/jupyterhub.crt
+      - JUPYTERHUB_SSL_KEY=/srv/jupyterhub/jupyterhub.key
+    networks:
+      - jupyterhub-network
+
+volumes:
+  jupyterhub-data:
+
+networks:
+  jupyterhub-network:
+    name: jupyterhub-network
