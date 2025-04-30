@@ -18,7 +18,6 @@ RUN python3 -m pip install --no-cache-dir \
     bcrypt \
     && python3 -m pip install --no-cache-dir git+https://github.com/yuvipanda/jupyterhub-ssh.git
 
-# Set working directory
 WORKDIR /srv/jupyterhub
 
 # Command to run when container starts
