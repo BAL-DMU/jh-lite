@@ -23,7 +23,179 @@ c.NativeAuthenticator.open_signup = True
 
 # Spawn single-user servers as Docker containers
 c.JupyterHub.spawner_class = DockerSpawner
-c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
+
+# Configure Docker image selection
+default_image = os.environ.get('DOCKER_NOTEBOOK_IMAGE', 'jupyter/base-notebook:latest')
+
+# Define the options form for image selection
+def get_options_form(spawner):
+    # Hardcoded list of available Docker images
+    available_images = [
+        ('jupyter/base-notebook:latest', 'Base Notebook - Minimal Jupyter image'),
+        ('jupyter/minimal-notebook:latest', 'Minimal Notebook - Python with Jupyter'),
+        ('jupyter/scipy-notebook:latest', 'SciPy Notebook - Scientific Python stack')
+    ]
+    
+    # Create dropdown options from available images
+    option_html = ""
+    for image_value, image_name in available_images:
+        selected = "selected" if image_value == default_image else ""
+        option_html += f'<option value="{image_value}" {selected}>{image_name}</option>\n'
+    
+    # Create the form with styling similar to the reference implementation
+    return f"""
+    <fieldset>
+        <div class="form-group" id="dockerImageSelection">
+            <h3>Select a Docker Image</h3>
+            <select name="docker_image" id="docker_image" class="form-control">
+                <option value="">Select a Docker image</option>
+                {option_html}
+            </select>
+            
+            <div class="custom-image-input">
+                <input type="text" name="customImage" id="customImage" class="custom-input-field" 
+                    placeholder="Or enter a custom Docker image (e.g., jupyter/datascience-notebook:latest)">
+            </div>
+            
+            <div id="imageDetails" class="image-details" style="display: none;"></div>
+        </div>
+    </fieldset>
+    
+    <style>
+        .form-group {{
+            margin-bottom: 15px;
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }}
+        select {{
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }}
+        .custom-image-input {{
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }}
+        .custom-input-field {{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }}
+        .image-details {{
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }}
+    </style>
+    
+    <script>
+        // Add event listeners once the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {{
+            const selectElement = document.getElementById('docker_image');
+            const customImageInput = document.getElementById('customImage');
+            const detailsElement = document.getElementById('imageDetails');
+            
+            // Event listener for docker image selection
+            selectElement.addEventListener('change', function(e) {{
+                if (e.target.value) {{
+                    // Clear custom image input when dropdown is used
+                    customImageInput.value = '';
+                    
+                    // Display image details
+                    const imageParts = e.target.value.split(':');
+                    detailsElement.style.display = 'block';
+                    detailsElement.innerHTML = `
+                        <h3>Image Details</h3>
+                        <p><strong>Repository:</strong> ${{imageParts[0]}}</p>
+                        <p><strong>Tag:</strong> ${{imageParts[1] || 'latest'}}</p>
+                    `;
+                }} else {{
+                    detailsElement.style.display = 'none';
+                }}
+            }});
+            
+            // Event listener for custom image input
+            customImageInput.addEventListener('input', function(e) {{
+                if (e.target.value.trim()) {{
+                    // Clear dropdown selection
+                    selectElement.value = '';
+                    
+                    // Show details for custom image
+                    const imageParts = e.target.value.trim().split(':');
+                    detailsElement.style.display = 'block';
+                    detailsElement.innerHTML = `
+                        <h3>Custom Image Details</h3>
+                        <p><strong>Repository:</strong> ${{imageParts[0]}}</p>
+                        <p><strong>Tag:</strong> ${{imageParts[1] || 'latest'}}</p>
+                    `;
+                }} else {{
+                    detailsElement.style.display = 'none';
+                }}
+            }});
+        }});
+    </script>
+    """
+
+# Set the options form
+c.DockerSpawner.options_form = get_options_form
+
+# Handle form submission
+def options_from_form(form_data):
+    options = {}
+    
+    # First check if a custom image was provided
+    if 'customImage' in form_data and form_data['customImage'][0]:
+        options['docker_image'] = form_data['customImage'][0]
+    # Then check if a predefined image was selected
+    elif 'docker_image' in form_data and form_data['docker_image'][0]:
+        options['docker_image'] = form_data['docker_image'][0]
+    # Otherwise use the default image
+    else:
+        options['docker_image'] = default_image
+    
+    return options
+
+c.DockerSpawner.options_from_form = options_from_form
+
+# Notebook directory
+notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR', '/home/jovyan/work')
+c.DockerSpawner.notebook_dir = notebook_dir
+
+# Mount the real user's Docker volume on the host to the notebook user's
+# notebook directory in the container
+def customize_volumes(spawner):
+    username = spawner.user.name
+    # Mount data directory - adjust the paths as needed for your local setup
+    spawner.volumes[f'/srv/jupyterhub/data/{username}'] = {'bind': notebook_dir, 'mode': 'rw'}
+
+# Use selected image when spawning
+def pre_spawn_hook(spawner):
+    # First run the existing volume customization
+    customize_volumes(spawner)
+    
+    # Then set the image based on user selection
+    if 'docker_image' in spawner.user_options:
+        spawner.image = spawner.user_options['docker_image']
+        spawner.log.info(f"Using user-selected image: {spawner.image}")
+    else:
+        spawner.image = default_image
+        spawner.log.info(f"Using default image: {spawner.image}")
+
+c.DockerSpawner.pre_spawn_hook = pre_spawn_hook
+
 c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
 c.JupyterHub.hub_ip = '0.0.0.0'
 c.JupyterHub.hub_port = 8081
@@ -48,19 +220,6 @@ else:
 
 c.JupyterHub.cleanup_servers = False
 c.JupyterHub.allow_named_servers = True
-
-# Notebook directory
-notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR', '/home/jovyan/work')
-c.DockerSpawner.notebook_dir = notebook_dir
-
-# Mount the real user's Docker volume on the host to the notebook user's
-# notebook directory in the container
-def customize_volumes(spawner):
-    username = spawner.user.name
-    # Mount data directory - adjust the paths as needed for your local setup
-    spawner.volumes[f'/srv/jupyterhub/data/{username}'] = {'bind': notebook_dir, 'mode': 'rw'}
-
-c.DockerSpawner.pre_spawn_hook = customize_volumes
 
 # Remove containers once they are stopped
 c.DockerSpawner.remove = True
