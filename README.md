@@ -28,9 +28,10 @@ jh-lite/
 ## Quick Start
 
 1. Clone the repository
-2. Run `docker-compose up -d --build`
-3. Create admin: `docker exec -it jupyterhub python /srv/jupyterhub/create-admin.py admin yourpassword`
-4. Access: http://localhost:8000 (or https://localhost:8443 with HTTPS enabled)
+2. Generate SSL certificates: `sh generate-certificates.sh`
+3. Run `docker-compose up -d --build`
+4. Create admin: `docker exec -it jupyterhub python /srv/jupyterhub/create-admin.py admin yourpassword`
+5. Access: https://localhost:8443 (secure HTTPS connection)
 
 ## Installation Guide: JupyterHub with Docker Compose
 
@@ -89,14 +90,8 @@ JupyterHub warns about running over unsecured HTTP. To enable HTTPS:
 
 1. Generate self-signed certificates:
    ```bash
-   # Make script executable (Linux/macOS)
-   chmod +x generate-certificates.sh
-   
-   # Run the script
-   ./generate-certificates.sh
-   
-   # For Windows PowerShell
-   # ./generate-certificates.sh or bash generate-certificates.sh
+   # For Linux or Git Bash on Windows
+   sh generate-certificates.sh
    ```
 
 2. Update docker-compose.yml (already configured in this repository):
