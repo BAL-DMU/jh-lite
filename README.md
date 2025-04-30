@@ -31,7 +31,7 @@ jh-lite/
 1. Clone the repository
 2. Generate SSL certificates:
    - Linux/Mac: `sh generate-certificates.sh`
-   - Windows: `.\generate-certificates.ps1`
+   - Windows: `PowerShell -ExecutionPolicy Bypass -File .\generate-certificates.ps1`
 3. Run `docker-compose up -d --build`
 4. Create admin: `docker exec -it jupyterhub python /srv/jupyterhub/create-admin.py admin yourpassword`
 5. Access: https://localhost:8443 (secure HTTPS connection)
