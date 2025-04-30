@@ -19,7 +19,8 @@ jh-lite/
 ├── create-admin.py         # Admin user creation script
 ├── docker-compose.yml      # Docker service configuration
 ├── Dockerfile              # Container definition
-├── generate-certificates.sh # SSL certificate generator
+├── generate-certificates.sh # SSL certificate generator (Linux/Mac)
+├── generate-certificates.ps1 # SSL certificate generator (Windows)
 ├── jupyterhub_config.py    # JupyterHub configuration
 ├── README.md               # This documentation
 └── LICENSE                 # Project license
@@ -28,7 +29,9 @@ jh-lite/
 ## Quick Start
 
 1. Clone the repository
-2. Generate SSL certificates: `sh generate-certificates.sh`
+2. Generate SSL certificates:
+   - Linux/Mac: `sh generate-certificates.sh`
+   - Windows: `.\generate-certificates.ps1`
 3. Run `docker-compose up -d --build`
 4. Create admin: `docker exec -it jupyterhub python /srv/jupyterhub/create-admin.py admin yourpassword`
 5. Access: https://localhost:8443 (secure HTTPS connection)
@@ -90,9 +93,14 @@ JupyterHub warns about running over unsecured HTTP. To enable HTTPS:
 
 1. Generate self-signed certificates:
    ```bash
-   # For Linux or Git Bash on Windows
+   # For Linux or Mac
    sh generate-certificates.sh
+   
+   # For Windows PowerShell
+   PowerShell -ExecutionPolicy Bypass -File .\generate-certificates.ps1
    ```
+   
+   Note for Windows: You'll need to install OpenSSL first from https://slproweb.com/products/Win32OpenSSL.html
 
 2. Update docker-compose.yml (already configured in this repository):
    - Ensure SSL certificate volume mounts are uncommented
