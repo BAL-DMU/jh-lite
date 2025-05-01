@@ -35,14 +35,15 @@ services:
       # SSL certificate paths (for HTTPS)
       - JUPYTERHUB_SSL_CERT=/srv/jupyterhub/jupyterhub.crt
       - JUPYTERHUB_SSL_KEY=/srv/jupyterhub/jupyterhub.key
+      # GPU configuration for spawned containers
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     networks:
       - jupyterhub-network
 
 volumes:
   jupyterhub-data:
   jupyterhub-user-data:
-    # Using a simple named volume instead of bind mount with driver_opts
-    # This will be managed by Docker and work on Windows
 
 networks:
   jupyterhub-network:

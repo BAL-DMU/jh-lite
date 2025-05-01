@@ -230,6 +230,16 @@ def pre_spawn_hook(spawner):
     if 'docker_image' in spawner.user_options:
         spawner.image = spawner.user_options['docker_image']
         spawner.log.info(f"Using user-selected image: {spawner.image}")
+        
+        # Enable GPU for CUDA images
+        if 'cuda' in spawner.image.lower() or 'gpu' in spawner.image.lower():
+            spawner.log.info(f"Enabling GPU access for image: {spawner.image}")
+            # Add GPU configuration for Docker
+            spawner.extra_host_config = {
+                'device_requests': [
+                    {'Driver': 'nvidia', 'Count': -1, 'Capabilities': [['gpu', 'compute', 'utility']]}
+                ]
+            }
     else:
         spawner.image = default_image
         spawner.log.info(f"Using default image: {spawner.image}")
