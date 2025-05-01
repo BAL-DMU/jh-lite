@@ -180,6 +180,18 @@ def customize_volumes(spawner):
     username = spawner.user.name
     # Mount data directory - adjust the paths as needed for your local setup
     spawner.volumes[f'/srv/jupyterhub/data/{username}'] = {'bind': notebook_dir, 'mode': 'rw'}
+    
+    # Set the user to run as the jovyan user, but allow them to create files as root
+    # This is needed to prevent permission issues
+    spawner.extra_create_kwargs['user'] = 'root'
+    
+    # Use environment variables to ensure proper permissions for data folders
+    spawner.environment['NB_UID'] = '1000'  # Default jovyan user ID
+    spawner.environment['NB_GID'] = '100'   # Default users group ID
+    spawner.environment['CHOWN_HOME'] = 'yes'
+    spawner.environment['CHOWN_HOME_OPTS'] = '-R'
+    spawner.environment['CHOWN_EXTRA'] = f'{notebook_dir}'
+    spawner.environment['CHOWN_EXTRA_OPTS'] = '-R'
 
 # Use selected image when spawning
 def pre_spawn_hook(spawner):

@@ -19,6 +19,8 @@ services:
       # SSL certificates for HTTPS
       - ./ssl/jupyterhub.crt:/srv/jupyterhub/jupyterhub.crt
       - ./ssl/jupyterhub.key:/srv/jupyterhub/jupyterhub.key
+      # Data directory for user notebooks with proper permissions
+      - jupyterhub-user-data:/srv/jupyterhub/data
     ports:
       # HTTP port (uncomment for HTTP mode)
       # - "8000:8000"
@@ -38,6 +40,9 @@ services:
 
 volumes:
   jupyterhub-data:
+  jupyterhub-user-data:
+    # Using a simple named volume instead of bind mount with driver_opts
+    # This will be managed by Docker and work on Windows
 
 networks:
   jupyterhub-network:
