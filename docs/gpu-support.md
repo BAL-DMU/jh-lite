@@ -7,17 +7,17 @@ This guide explains how to enable GPU acceleration for CUDA-enabled Docker image
 Before enabling GPU support in JH-Lite, ensure your system meets these requirements:
 
 1. **Hardware**:
-   - NVIDIA GPU compatible with CUDA
-   - Sufficient power and cooling for GPU workloads
+    + NVIDIA GPU compatible with CUDA
+
 
 2. **Host Requirements**:
-   - NVIDIA GPU drivers installed on the host system
-   - NVIDIA Container Toolkit (nvidia-docker2) installed
-   - Docker configured to use the NVIDIA runtime
+    + NVIDIA GPU drivers installed on the host system
+    + NVIDIA Container Toolkit (nvidia-docker2) installed
+    + Docker configured to use the NVIDIA runtime
 
 3. **Software**:
-   - Docker 19.03+ (which includes integrated NVIDIA GPU support)
-   - Docker Compose 1.28.0+ (for GPU support in compose files)
+    + Docker 19.03+ (which includes integrated NVIDIA GPU support)
+    + Docker Compose 1.28.0+ (for GPU support in compose files)
 
 ## Verifying GPU Setup
 

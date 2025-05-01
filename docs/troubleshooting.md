@@ -25,9 +25,9 @@ If you're unable to log in to JupyterHub:
 
 1. **Admin User Not Created**
    - Verify you've created an admin user:
-     ```bash
-     docker exec -it jupyterhub python /srv/jupyterhub/create-admin.py admin yourpassword
-     ```
+      ```bash
+      docker exec -it jupyterhub python /srv/jupyterhub/create-admin.py admin yourpassword
+      ```
    - Check for success message confirming user creation
 
 2. **Incorrect Credentials**

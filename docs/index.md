@@ -14,6 +14,7 @@ JH-Lite provides a complete JupyterHub environment that runs locally using Docke
 ## Use Cases
 
 JH-Lite is ideal for:
+
 - Testing research workflows before production deployment
 - Customizing notebook environments and extensions
 - Preparing for institutional JupyterHub deployment
@@ -22,7 +23,7 @@ JH-Lite is ideal for:
 
 ## Key Features
 
-- Docker-based deployment for easy setup and teardown
+- Docker-based deployment for easy setup and removal
 - Configurable authentication
 - Multiple user support
 - Persistent storage for user data
