@@ -81,7 +81,8 @@ def get_options_form(spawner):
     available_images = [
         ('jupyter/base-notebook:latest', 'Base Notebook - Minimal Jupyter image'),
         ('jupyter/minimal-notebook:latest', 'Minimal Notebook - Python with Jupyter'),
-        ('jupyter/scipy-notebook:latest', 'SciPy Notebook - Scientific Python stack')
+        ('jupyter/scipy-notebook:latest', 'SciPy Notebook - Scientific Python stack'),
+        ('jupyter/pytorch-notebook-cuda12:latest', 'PyTorch Notebook - PyTorch with CUDA 12')
     ]
     
     # Create dropdown options from available images
