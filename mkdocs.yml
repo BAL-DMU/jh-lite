@@ -1,0 +1,48 @@
+site_name: JH-Lite
+site_description: Documentation for JH-Lite, a Local JupyterHub for Prototyping & Customization
+site_author: BAL-DMU Team
+repo_url: https://github.com/BAL-DMU/jh-lite
+
+theme:
+  name: readthedocs
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.highlight
+  - footnotes
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Server Requirements: server-requirements.md
+    - Quick Start Guide: quick-start.md
+    - Installation: installation.md
+    - Configuration: configuration.md
+  - Architecture:
+    - Docker Spawner: docker-spawner.md
+    - Docker Stacks Integration: docker-stacks.md
+    - GPU Support: gpu-support.md
+  - Help:
+    - Troubleshooting: troubleshooting.md
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      fallback_to_build_date: true
+      enable_creation_date: true
+      enabled: !ENV [CI, false]
+      exclude:
+        - index.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/BAL-DMU/jh-lite
+  version:
+    number: 0.1.0
