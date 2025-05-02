@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3 
+# Copyright (c) 2025, Balgrist University Clinic, Digital Medicine Unit.
+# Distributed under the terms of the Modified BSD License.
+
+
 """
 Create admin user for JupyterHub.
 Run this script inside the JupyterHub container to create an admin user.

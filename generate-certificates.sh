@@ -1,4 +1,7 @@
-#!/bin/sh
+# !/bin/sh
+# Copyright (c) 2025, Balgrist University Clinic, Digital Medicine Unit.
+# Distributed under the terms of the Modified BSD License.
+
 # Simple script to generate self-signed SSL certificates for JupyterHub
 # Works in Git Bash on Windows or Linux
 

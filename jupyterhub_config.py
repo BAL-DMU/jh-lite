@@ -1,3 +1,6 @@
+# Copyright (c) 2025, Balgrist University Clinic, Digital Medicine Unit.
+# Distributed under the terms of the Modified BSD License.
+
 import os
 import sys
 from dockerspawner import DockerSpawner

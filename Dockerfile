@@ -1,5 +1,6 @@
-# Copyright (c) Jupyter Development Team.
+# Copyright (c) 2025, Balgrist University Clinic, Digital Medicine Unit.
 # Distributed under the terms of the Modified BSD License.
+
 ARG JUPYTERHUB_VERSION=latest
 FROM jupyterhub/jupyterhub:${JUPYTERHUB_VERSION}
 

@@ -1,3 +1,6 @@
+# Copyright (c) 2025, Balgrist University Clinic, Digital Medicine Unit.
+# Distributed under the terms of the Modified BSD License.
+
 # PowerShell script to generate self-signed SSL certificates for JupyterHub
 # Works on Windows
 

@@ -1,3 +1,6 @@
+# Copyright (c) 2025, Balgrist University Clinic, Digital Medicine Unit.
+# Distributed under the terms of the Modified BSD License.
+
 site_name: JH-Lite
 site_description: Documentation for JH-Lite, a Local JupyterHub for Prototyping & Customization
 site_author: BAL-DMU Team
